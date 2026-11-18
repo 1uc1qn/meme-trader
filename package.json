@@ -1,0 +1,16 @@
+{
+  "name": "meme-trade-bot",
+  "version": "1.1.0",
+  "description": "Solana Meme Coin Trading Bot - Demo + PWA + Free Deploy Ready",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "demo": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": ["solana", "meme", "trading", "bot", "pwa"],
+  "author": "Demo bot",
+  "license": "MIT"
+}

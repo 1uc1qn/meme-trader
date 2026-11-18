@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#14f195" />
+  <meta name="description" content="Solana Meme Coin Auto Trading Bot - Demo Mode with paper wallet" />
+  
+  <!-- PWA / iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="MemeBot" />
+  <link rel="apple-touch-icon" href="/icon-192.svg" />
+  <link rel="manifest" href="/manifest.json" />
+  
+  <title>Meme Trade Bot — Solana Auto Trader</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <div class="logo-icon">⚡</div>
+        <div>
+          <h1>Meme Trade Bot</h1>
+          <span class="tagline">Solana • Demo + Live Ready</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="mode-badge" id="modeBadge">DEMO MODE</div>
+        <div class="status-pill" id="statusPill">
+          <span class="dot"></span>
+          <span id="statusText">Stopped</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Grid -->
+    <main class="main">
+      <!-- Left Column: Controls + Portfolio -->
+      <section class="panel controls-panel">
+        <div class="panel-header">
+          <h2>Control Center</h2>
+        </div>
+
+        <div class="balance-card">
+          <div class="balance-label">Paper Wallet Balance</div>
+          <div class="balance-value" id="balanceValue">10.0000 <span>SOL</span></div>
+          <div class="balance-usd" id="balanceUSD">≈ $1,750.00</div>
+          <div class="balance-sub" id="pnlSummary">PnL: +0.0000 SOL ($0.00)</div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-start" id="btnStart">▶ Start Auto Trade</button>
+          <button class="btn btn-stop" id="btnStop" disabled>⏹ Stop</button>
+        </div>
+
+        <div class="btn-row secondary">
+          <button class="btn btn-ghost" id="btnReset">Reset Demo Wallet</button>
+          <button class="btn btn-ghost" id="btnConnectWallet" title="Real wallet connection (Phantom etc.)">Connect Wallet</button>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat">
+            <div class="stat-val" id="statTrades">0</div>
+            <div class="stat-label">Trades</div>
+          </div>
+          <div class="stat">
+            <div class="stat-val" id="statWins">0</div>
+            <div class="stat-label">Wins</div>
+          </div>
+          <div class="stat">
+            <div class="stat-val" id="statLosses">0</div>
+            <div class="stat-label">Losses</div>
+          </div>
+          <div class="stat">
+            <div class="stat-val" id="statWinRate">—</div>
+            <div class="stat-label">Win Rate</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Settings -->
+      <section class="panel settings-panel">
+        <div class="panel-header">
+          <h2>Strategy Settings</h2>
+          <span class="hint">Inspired by YZYLAB filters + listen execution</span>
+        </div>
+        <div class="settings-form">
+          <div class="field">
+            <label>Trade Size (SOL)</label>
+            <input type="number" id="setAmount" step="0.01" min="0.01" value="0.1" />
+          </div>
+          <div class="field">
+            <label>Max Positions</label>
+            <input type="number" id="setMaxPos" min="1" max="20" value="5" />
+          </div>
+          <div class="field">
+            <label>Stop Loss %</label>
+            <input type="number" id="setSL" step="1" value="-40" />
+          </div>
+          <div class="field">
+            <label>Take Profit %</label>
+            <input type="number" id="setTP" step="1" value="80" />
+          </div>
+          <div class="field">
+            <label>Min Liquidity (USD)</label>
+            <input type="number" id="setMinLiq" step="1000" value="5000" />
+          </div>
+          <div class="field">
+            <label>Max Market Cap (USD)</label>
+            <input type="number" id="setMaxMC" step="10000" value="500000" />
+          </div>
+          <div class="field full">
+            <label>
+              <input type="checkbox" id="setAutoSell" checked /> Auto Sell (SL/TP)
+            </label>
+          </div>
+          <button class="btn btn-primary full" id="btnSaveSettings">Save Settings</button>
+        </div>
+      </section>
+
+      <!-- Open Positions -->
+      <section class="panel positions-panel">
+        <div class="panel-header">
+          <h2>Open Positions</h2>
+          <span id="posCount">0</span>
+        </div>
+        <div class="positions-list" id="positionsList">
+          <div class="empty">No open positions. Start the bot to begin trading.</div>
+        </div>
+      </section>
+
+      <!-- Token Feed -->
+      <section class="panel feed-panel">
+        <div class="panel-header">
+          <h2>Live Token Discovery</h2>
+          <span class="live-dot"></span>
+        </div>
+        <div class="token-feed" id="tokenFeed">
+          <div class="empty">Waiting for new launches...</div>
+        </div>
+      </section>
+
+      <!-- Trade History -->
+      <section class="panel history-panel">
+        <div class="panel-header">
+          <h2>Trade Log</h2>
+        </div>
+        <div class="history-list" id="historyList">
+          <div class="empty">No trades yet.</div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>
+        Built with ideas from 
+        <a href="https://github.com/YZYLAB/solana-trade-bot" target="_blank">YZYLAB/solana-trade-bot</a> 
+        &amp; 
+        <a href="https://github.com/piotrostr/listen" target="_blank">piotrostr/listen</a>.
+        Demo uses simulated prices &amp; paper SOL. Real trading requires careful setup — never share private keys.
+      </p>
+    </footer>
+  </div>
+
+
+  <!-- Trade Report Modal -->
+  <div id="reportModal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Session Report</h2>
+        <button id="closeReport" class="modal-close">×</button>
+      </div>
+      <div class="report-preview">
+        <canvas id="reportCanvas" width="600" height="420"></canvas>
+      </div>
+      <div class="modal-actions">
+        <button id="downloadReport" class="btn btn-start">⬇ Download Image</button>
+        <button id="closeReport2" class="btn btn-ghost">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(console.error);
+      });
+    }
+  </script>
+</body>
+</html>
